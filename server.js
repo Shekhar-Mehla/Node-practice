@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import { recieveDataFromFile } from "./view.js";
 
 const server = express();
 const __dirName = path.resolve();
@@ -43,8 +44,12 @@ server.post("/register", (req, res) => {
       error ? console.log(error) : console.log("added");
     });
   }
-
-  res.sendFile(__dirName + "/register.html");
+  // reading  data from file
+  fs.readFile(fileName, "utf8", (error, data) => {
+    error
+      ? console.log(error)
+      : res.send(recieveDataFromFile(data.split("\n")));
+  });
 });
 server.get("/register", (req, res) => {
   res.sendFile(__dirName + "/register.html");
