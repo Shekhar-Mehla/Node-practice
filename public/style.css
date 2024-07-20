@@ -2,3 +2,7 @@ ul li a:hover {
   background-color: red;
   border-radius: 3px;
 }
+.uli li {
+  background-color: red;
+  list-style: none;
+}

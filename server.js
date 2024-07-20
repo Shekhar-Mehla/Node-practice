@@ -9,7 +9,6 @@ server.use(express.urlencoded({ extended: true }));
 // home page controller
 server.use(express.static(path.join(__dirName, "public")));
 server.get("/", (req, res) => {
-  // console.log(req.query);
   res.sendFile(__dirName + "/index.html");
 });
 // login page controller
@@ -26,6 +25,11 @@ server.post("/login", (req, res) => {
 });
 
 // // register page controller
+
+server.get("/register", (req, res) => {
+  res.sendFile(__dirName + "/register.html");
+});
+
 server.post("/register", (req, res) => {
   // destructure the object recived from the body
   const { name, email, password } = req.body;
@@ -45,14 +49,16 @@ server.post("/register", (req, res) => {
     });
   }
   // reading  data from file
-  fs.readFile(fileName, "utf8", (error, data) => {
-    error
-      ? console.log(error)
-      : res.send(recieveDataFromFile(data.split("\n")));
-  });
-});
-server.get("/register", (req, res) => {
-  res.sendFile(__dirName + "/register.html");
+
+  setTimeout(() => {
+    fs.readFile(fileName, "utf8", (error, data) => {
+      if (error) {
+        console.log(error);
+      } else {
+        res.send(recieveDataFromFile(data.split("\n")));
+      }
+    });
+  }, 1000);
 });
 
 // end
