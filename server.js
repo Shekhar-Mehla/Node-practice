@@ -8,11 +8,23 @@ const __dirName = path.resolve();
 server.use(express.urlencoded({ extended: true }));
 // home page controller
 server.use(express.static(path.join(__dirName, "public")));
-server.get("/", (req, res) => {
-  res.sendFile(__dirName + "/index.html");
+server.get("/Home", (req, res) => {
+  // reading  data from file
+  const fileName = __dirName + "/test.csv";
+  fs.readFile(fileName, "utf8", (error, data) => {
+    if (error) {
+      console.log(error);
+    } else {
+      res.send(recieveDataFromFile(data.split("\n")));
+    }
+  });
 });
 // login page controller
 
+server.get("/", (req, res) => {
+  // console.log(req.body);
+  res.sendFile(__dirName + "/login.html");
+});
 server.get("/login", (req, res) => {
   // console.log(req.body);
   res.sendFile(__dirName + "/login.html");
@@ -21,7 +33,29 @@ server.get("/login", (req, res) => {
 // handlig the data recived from the form
 server.post("/login", (req, res) => {
   // console.log(req.body);
-  res.sendFile(__dirName + "/login.html");
+  const { email, password } = req.body;
+  const str = `${email},${password}`;
+  console.log(str);
+  fs.readFile(__dirName + "/test.csv", "utf8", (error, data) => {
+    error
+      ? console.log(error)
+      : data.length
+      ? data.includes(str)
+        ? res.send(`<h3><div class="alert alert-success" role="alert">
+  congratulation you have sucessfully login
+</div>
+
+        </h3>`)
+        : res.send(
+            `<h3><div class="alert alert-danger" role="alert">
+  you have entered the invalid login details. check your email or password!
+</div>
+
+        </h3>`
+          )
+      : res.send("database is empty");
+  });
+  // res.sendFile(__dirName + "/login.html");
 });
 
 // // register page controller
@@ -48,17 +82,8 @@ server.post("/register", (req, res) => {
       error ? console.log(error) : console.log("added");
     });
   }
-  // reading  data from file
 
-  setTimeout(() => {
-    fs.readFile(fileName, "utf8", (error, data) => {
-      if (error) {
-        console.log(error);
-      } else {
-        res.send(recieveDataFromFile(data.split("\n")));
-      }
-    });
-  }, 1000);
+  res.sendFile(__dirName + "/regisrterResponse.html");
 });
 
 // end
