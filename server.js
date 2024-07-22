@@ -37,23 +37,27 @@ server.post("/login", (req, res) => {
   const str = `${email},${password}`;
   console.log(str);
   fs.readFile(__dirName + "/test.csv", "utf8", (error, data) => {
-    error
-      ? console.log(error)
-      : data.length
-      ? data.includes(str)
-        ? res.send(`<h3><div class="alert alert-success" role="alert">
-  congratulation you have sucessfully login
-</div>
-
-        </h3>`)
-        : res.send(
-            `<h3><div class="alert alert-danger" role="alert">
-  you have entered the invalid login details. check your email or password!
-</div>
-
-        </h3>`
-          )
-      : res.send("database is empty");
+    if (error) {
+      console.log(error);
+    } else {
+      if (data.length > 0) {
+        data.includes(str)
+          ? res.send(`<h3><div class="alert alert-success" role="alert">
+        congratulation you have sucessfully login
+      </div>
+      
+              </h3>`)
+          : res.send(
+              `<h3><div class="alert alert-danger" role="alert">
+        you have entered the invalid login details. check your email or password!
+      </div>
+      
+              </h3>`
+            );
+      } else {
+        res.send("no data found");
+      }
+    }
   });
   // res.sendFile(__dirName + "/login.html");
 });
